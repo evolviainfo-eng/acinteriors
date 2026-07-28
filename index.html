@@ -185,8 +185,12 @@ section{padding-block:var(--s11)}
 .index{margin-top:var(--s9);display:grid;grid-template-columns:1fr 1fr;gap:var(--s9) 28px}
 .index>*:nth-child(even){margin-top:var(--s10)}
 .proj{display:block;width:100%;text-align:left}
-.proj .frame{overflow:hidden;background:var(--surface)}
-.proj img{width:100%;transition:transform var(--d-long) var(--e-move)}
+.proj .frame{overflow:hidden;background:var(--surface);position:relative;aspect-ratio:3/2}
+.proj img{width:100%;height:100%;object-fit:cover;transition:transform var(--d-long) var(--e-move)}
+.proj img.alt{position:absolute;inset:0;height:100%;object-fit:cover;
+  opacity:0;transition:opacity 620ms var(--e-move),transform var(--d-long) var(--e-move)}
+.proj:hover img{transform:scale(1.03)}
+.proj:hover img.alt,.proj:focus-visible img.alt{opacity:1}
 .proj .meta{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s5);
   margin-top:var(--s4);padding-top:var(--s3);border-top:1px solid var(--line);
   transition:border-color var(--d-fast) var(--e-ui)}
@@ -200,65 +204,31 @@ section{padding-block:var(--s11)}
 /* ---------- viewer ---------- */
 .viewer{position:fixed;inset:0;z-index:90;background:var(--ink);color:var(--paper);
   opacity:0;visibility:hidden;transition:opacity var(--d-mid) var(--e-ui),visibility var(--d-mid);
-  display:flex;flex-direction:column;overscroll-behavior:contain}
+  overflow-y:auto;overscroll-behavior:contain}
 .viewer.is-open{opacity:1;visibility:visible}
-.viewer-bar{flex:0 0 auto;border-bottom:1px solid var(--line-dark);padding:var(--s5) var(--page);
+.viewer-bar{position:sticky;top:0;z-index:2;background:var(--ink);
+  border-bottom:1px solid var(--line-dark);padding:var(--s5) var(--page);
   display:flex;justify-content:space-between;align-items:center;gap:var(--s5)}
 .viewer-bar .t{font-family:'Bodoni Moda',Georgia,serif;font-size:var(--fs-md);letter-spacing:-.02em}
-.viewer-bar .s{font-size:var(--fs-label);letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(241,236,228,.55);margin-top:4px}
-.v-tools{display:flex;align-items:center;gap:var(--s5);white-space:nowrap}
-.v-count{font-size:var(--fs-label);letter-spacing:.14em;color:rgba(241,236,228,.55)}
-.v-count b{color:var(--paper);font-weight:400}
-.v-arrow{width:38px;height:38px;border:1px solid var(--line-dark);color:var(--paper);
-  display:grid;place-items:center;font-size:15px;line-height:1;
-  transition:border-color var(--d-fast) var(--e-ui),background var(--d-fast) var(--e-ui)}
-.v-arrow:hover{background:rgba(241,236,228,.10);border-color:rgba(241,236,228,.4)}
-.v-arrow:active{transform:scale(.96)}
-.viewer-close{font-size:var(--fs-label);letter-spacing:.16em;text-transform:uppercase;
-  color:var(--paper);padding:12px 0 12px 12px}
-
-.v-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;
-  padding:var(--s6) var(--page);position:relative;cursor:pointer;touch-action:pan-y}
-.v-frame{position:relative;width:100%;max-width:820px;height:100%;
-  display:flex;align-items:center;justify-content:center}
-.v-frame img{position:absolute;max-width:100%;max-height:100%;width:auto;height:auto;
-  object-fit:contain;clip-path:inset(0 0 0 100%);opacity:0}
-.v-frame img.is-on{clip-path:inset(0 0 0 0);opacity:1;
-  transition:clip-path 720ms var(--e-move),opacity 200ms linear}
-.v-frame img.is-out{opacity:1;clip-path:inset(0 0 0 0)}
-.v-frame.rev img{clip-path:inset(0 100% 0 0)}
-.v-frame.rev img.is-on{clip-path:inset(0 0 0 0)}
-
-.v-foot{flex:0 0 auto;border-top:1px solid var(--line-dark);padding:var(--s4) var(--page) var(--s5);
-  display:flex;align-items:center;gap:var(--s6)}
-.v-cap{font-size:var(--fs-sm);color:rgba(241,236,228,.6);flex:1 1 auto;min-width:0}
-.v-foot.no-cap .v-cap{display:none}
-.v-foot.no-cap .v-rail{max-width:100%;margin:0 auto}
-.v-rail{display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;
-  scrollbar-width:none;max-width:62%;padding-bottom:2px}
-.v-rail::-webkit-scrollbar{display:none}
-.v-rail button{flex:0 0 auto;width:74px;height:52px;overflow:hidden;opacity:.42;
-  transition:opacity var(--d-fast) var(--e-ui)}
-.v-rail button img{width:100%;height:100%;object-fit:cover}
-.v-rail button:hover{opacity:.75}
-.v-rail button[aria-current="true"]{opacity:1;outline:1px solid var(--accent);outline-offset:2px}
+.viewer-bar .s{font-size:var(--fs-label);letter-spacing:.14em;text-transform:uppercase;color:rgba(241,236,228,.55);margin-top:4px}
+.viewer-close{font-size:var(--fs-label);letter-spacing:.16em;text-transform:uppercase;color:var(--paper);white-space:nowrap;padding:14px 0 14px 14px}
+.viewer-stack{padding:var(--s8) var(--page) var(--s10);display:flex;flex-direction:column;
+  align-items:center;gap:var(--s6)}
+.viewer-stack img{width:100%;max-width:820px;background:rgba(241,236,228,.06)}
+.viewer-foot{max-width:820px;width:100%;border-top:1px solid var(--line-dark);padding-top:var(--s4);
+  font-size:var(--fs-sm);color:rgba(241,236,228,.55);display:flex;justify-content:space-between;
+  gap:var(--s6);flex-wrap:wrap}
+.viewer-foot span:last-child{white-space:nowrap}
 
 /* ---------- colour ---------- */
-.colour{background:var(--ink);color:var(--paper);position:relative;isolation:isolate}
-.colour>*{position:relative;z-index:1}
-html.js .colour::after{content:"";position:absolute;inset:0;z-index:3;background:var(--paper);
-  clip-path:inset(0 0 0 0);transition:clip-path 1100ms var(--e-move);pointer-events:none}
-html.js .colour.is-in::after{clip-path:inset(100% 0 0 0)}
+.colour{background:var(--ink);color:var(--paper)}
 .colour .label{color:rgba(241,236,228,.5)}
 .colour h2{font-family:'Bodoni Moda',Georgia,serif;font-weight:400;font-size:var(--fs-lg);
   letter-spacing:-.03em;line-height:1.1;margin-top:var(--s3)}
 .col-fig{grid-column:1/7;position:relative;aspect-ratio:1320/1400;background:#151312}
 .col-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  clip-path:inset(0 0 100% 0);z-index:1}
-.col-fig img.is-base{clip-path:inset(0 0 0 0);z-index:0}
-.col-fig img.is-on{clip-path:inset(0 0 0 0);z-index:2;
-  transition:clip-path 900ms var(--e-move)}
+  opacity:0;transition:opacity var(--d-slow) var(--e-move)}
+.col-fig img.is-on{opacity:1}
 .col-body{grid-column:8/13;align-self:center}
 .colour{padding-block:var(--s10)}
 .col-lead{margin-top:var(--s5);color:rgba(241,236,228,.72);max-width:36ch;text-wrap:pretty}
@@ -344,18 +314,18 @@ html.js .rv.is-in{opacity:1;transform:none}
 html.js .mask .line-in{transform:translateY(112%);transition:transform 820ms var(--e-move);transition-delay:calc(var(--i,0)*110ms)}
 html.js .mask.is-in .line-in{transform:none}
 
-/* clip image reveals — clip lives on the child, IO observes the parent */
-html.js .clipfig img,html.js .clipfig .hero-clip{clip-path:inset(0 0 100% 0);transition:clip-path 950ms var(--e-move)}
-html.js .clipfig.is-in img,html.js .clipfig.is-in .hero-clip{clip-path:inset(0 0 0 0)}
+/* figure reveals — a quiet fade while the photo settles from 1.04 to 1 */
+html.js .clipfig{opacity:0;transition:opacity 520ms linear}
+html.js .clipfig.is-in{opacity:1}
 .hero-clip{overflow:hidden}
-.hero-clip img{clip-path:none !important}
-html.js .hero-clip img{transform:scale(1.07);transition:transform 1300ms var(--e-move)}
+html.js .hero-clip img{transform:scale(1.04);transition:transform 1300ms var(--e-move)}
 html.js .clipfig.is-in .hero-clip img{transform:scale(1)}
 
-/* project cards: frame wipes open, photo settles */
-html.js .proj .frame{clip-path:inset(0 0 100% 0);transition:clip-path 950ms var(--e-move)}
-html.js .proj.is-in .frame{clip-path:inset(0 0 0 0)}
-html.js .proj .frame img{transform:scale(1.06)}
+/* project cards: fade in, photo settles */
+html.js .proj{opacity:0;transform:translateY(14px);
+  transition:opacity 420ms linear,transform 560ms var(--e-move)}
+html.js .proj.is-in{opacity:1;transform:none}
+html.js .proj .frame img{transform:scale(1.04)}
 html.js .proj.is-in .frame img{transform:scale(1)}
 .proj.is-in:hover .frame img{transform:scale(1.03)}
 
@@ -374,9 +344,16 @@ html.js .yes.is-in li:nth-child(4)>.t,html.js .yes.is-in li:nth-child(4)::after{
 html.js .yes.is-in li:nth-child(5)>.t,html.js .yes.is-in li:nth-child(5)::after{transition-delay:280ms}
 html.js .yes.is-in li:nth-child(6)>.t,html.js .yes.is-in li:nth-child(6)::after{transition-delay:350ms}
 
-/* footer mark wipes in left-to-right */
-html.js .foot img{clip-path:inset(0 100% 0 0);transition:clip-path 900ms var(--e-move)}
-html.js .foot.is-in img{clip-path:inset(0 0 0 0)}
+/* footer mark fades in */
+html.js .foot img{opacity:0;transition:opacity 700ms linear}
+html.js .foot.is-in img{opacity:.9}
+
+/* viewer images rise as the room opens */
+.viewer.is-open .viewer-stack img{animation:vrise 640ms var(--e-move) both}
+.viewer.is-open .viewer-stack img:nth-child(1){animation-delay:80ms}
+.viewer.is-open .viewer-stack img:nth-child(2){animation-delay:160ms}
+.viewer.is-open .viewer-stack img:nth-child(3){animation-delay:240ms}
+@keyframes vrise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 
 /* parallax media */
 .plx-wrap{overflow:hidden}
@@ -440,12 +417,8 @@ html.js .hero-cap.rv{transition-delay:500ms}
   .st-body{grid-column:1/13;margin-top:var(--s7)}
   .ct-body{grid-column:1/13}
   .ct-form{grid-column:1/13;margin-top:var(--s8)}
+  .viewer-stack{padding:var(--s6) var(--page) var(--s9);gap:var(--s5)}
   .viewer-bar{padding:var(--s4) var(--page)}
-  .v-stage{padding:var(--s4) 12px}
-  .v-foot{flex-direction:column;align-items:flex-start;gap:var(--s3);padding-bottom:var(--s4)}
-  .v-rail{max-width:100%;width:100%}
-  .v-rail button{width:60px;height:44px}
-  .viewer-bar .t{font-size:var(--fs-body)}
   .quote{padding:var(--s5)}
   .foot{gap:var(--s5)}
 }
@@ -531,7 +504,7 @@ ir atmosfera.</h1>
         <li><button type="button" class="t" data-y="5" aria-pressed="false" data-en="Accent lighting">Akcentiniai šviestuvai</button></li>
       </ul>
       <p class="man-note" data-en="“Personally, I especially value matte and natural textures that create a warm, welcoming feeling while keeping the interior modern and elegant.”">„Asmeniškai, aš ypač vertinu matines ir natūralias tekstūras, kurios sukuria šiltą ir jaukų pojūtį, išlaikant modernų ir elegantišką interjero stilių.“</p>
-      <p class="man-src" data-en="AC Interior, 2024">AC Interior, 2024</p>
+      <p class="man-src" data-en="Agnė Čeliauskaitė, 2024">Agnė Čeliauskaitė, 2024</p>
     </div>
   </div>
 </section>
@@ -551,7 +524,7 @@ ir atmosfera.</h1>
 </section>
 
 <!-- ============ COLOUR ============ -->
-<section class="colour curtain" id="spalva">
+<section class="colour" id="spalva">
   <div class="wrap grid">
     <figure class="col-fig rv" id="colFig"></figure>
     <div class="col-body rv">
@@ -575,7 +548,7 @@ ir atmosfera.</h1>
     <div class="st-body rv">
       <p class="label" data-en="Studio">Studija</p>
       <h2 data-en="A studio of one designer, working across borders">Studija, kurioje klientą lydi vienas dizaineris</h2>
-      <p data-en="AC Interior is Agnė Čeliauskaitė, working out of Klaipėda. Projects have been delivered across Lithuania — Klaipėda, Vilnius, Kaunas, Palanga, Mažeikiai, Tauragė, Trakai — and abroad: an office and a vacation house in Norway, an apartment in Milan, a staircase project in Iceland, a kitchen in France and a villa in Cyprus.">AC Interior — tai Agnė Čeliauskaitė, dirbanti iš Klaipėdos.Projektai įgyvendinti visoje Lietuvoje — Klaipėdoje, Vilniuje, Kaune, Palangoje, Mažeikiuose, Tauragėje, Trakuose — ir užsienyje: biuras bei vasarnamis Norvegijoje, butas Milane, laiptinės projektas Islandijoje, virtuvė Prancūzijoje ir vila Kipre.</p>
+      <p data-en="AC Interior is Agnė Čeliauskaitė, working out of Klaipėda. Projects have been delivered across Lithuania — Klaipėda, Vilnius, Kaunas, Palanga, Mažeikiai, Tauragė, Trakai — and abroad: an office and a vacation house in Norway, an apartment in Milan, a staircase project in Iceland, a kitchen in France and a villa in Cyprus.">AC Interior — tai Agnė Čeliauskaitė, dirbanti iš Klaipėdos. Projektai įgyvendinti visoje Lietuvoje — Klaipėdoje, Vilniuje, Kaune, Palangoje, Mažeikiuose, Tauragėje, Trakuose — ir užsienyje: biuras bei vasarnamis Norvegijoje, butas Milane, laiptinės projektas Islandijoje, virtuvė Prancūzijoje ir vila Kipre.</p>
       <p data-en="“The most important part is analysing the space and adapting it to the client's needs. We study the space, the architecture, the outside context, and having put all of it together we present the best option for the space and for the person who will live or work in it.”">„Svarbiausias aspektas – erdvės analizavimas bei pritaikymas užsakovo poreikiams. Nagrinėjame erdvę, architektūrą, išorinį kontekstą bei sudėję visus šiuos punktus pristatome geriausią variantą erdvei ir gyventojui ar verslininkui.“</p>
       <ul class="ctx">
         <li><span data-en="Published projects since">Paskelbti projektai nuo</span><span class="num">2019</span></li>
@@ -654,18 +627,9 @@ ir atmosfera.</h1>
       <div class="t" id="vTitle"></div>
       <div class="s" id="vSub"></div>
     </div>
-    <div class="v-tools">
-      <span class="v-count num"><b id="vNow">01</b> / <span id="vAll">01</span></span>
-      <button class="v-arrow" id="vPrev" aria-label="Ankstesnis kadras">&#8592;</button>
-      <button class="v-arrow" id="vNext" aria-label="Kitas kadras">&#8594;</button>
-      <button class="viewer-close" id="vClose" data-en="Close">Uždaryti</button>
-    </div>
+    <button class="viewer-close" id="vClose" data-en="Close">Uždaryti</button>
   </div>
-  <div class="v-stage" id="vStage"><div class="v-frame" id="vFrame"></div></div>
-  <div class="v-foot">
-    <p class="v-cap" id="vCap"></p>
-    <div class="v-rail" id="vRail"></div>
-  </div>
+  <div class="viewer-stack" id="vStack"></div>
 </div>
 
 <script>
@@ -696,7 +660,7 @@ var P = [
   clt:'Cinkas.', cen:'Zinc.'},
  {s:'norvegija-namas', lt:'Vasarnamis prie vandens', en:'A vacation house by the water', plt:'Norvegija', pen:'Norway', y:2021,
   clt:'Ta pati erdvė, kita virtuvė — klientai norėjo pasirinkimų.', cen:'Same space, different kitchen — the clients wanted options.'},
- {s:'mazeikiai-2021', lt:'Namai Mažeikiuose', en:'A home in Mažeikiai', plt:'Mažeikiai', pen:'Mažeikiai', y:2021,
+ {s:'mazeikiai-2021', c:4, lt:'Namai Mažeikiuose', en:'A home in Mažeikiai', plt:'Mažeikiai', pen:'Mažeikiai', y:2021,
   flt:'Fotografė: @interioshot', fen:'Photography: @interioshot', clt:'', cen:''},
  {s:'klaipeda-2021', lt:'Butas Klaipėdoje', en:'An apartment in Klaipėda', plt:'Klaipėda', pen:'Klaipėda', y:2021,
   flt:'Fotografė: @interioshot', fen:'Photography: @interioshot', clt:'', cen:''},
@@ -730,13 +694,14 @@ var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySele
 (function(){
   var host = $('#index'), out = '';
   P.forEach(function(p,i){
-    var d = D[p.s][0], n = D[p.s].length;
+    var c = p.c || 0, a = c === 0 ? 1 : 0;
+    var d = D[p.s][c], n = D[p.s].length;
     out += '<button class="proj rv" type="button" data-i="'+i+'">'
-      + '<span class="frame" style="display:block"><img loading="lazy" src="img/'+p.s+'-0-s.webp"'
-      + ' srcset="img/'+p.s+'-0-s.webp 720w, img/'+p.s+'-0.webp 1440w" sizes="(max-width:860px) 100vw, 46vw"'
+      + '<span class="frame" style="display:block"><img loading="lazy" src="img/'+p.s+'-'+c+'-s.webp"'
+      + ' srcset="img/'+p.s+'-'+c+'-s.webp 720w, img/'+p.s+'-'+c+'.webp 1440w" sizes="(max-width:860px) 100vw, 46vw"'
       + ' width="'+d[0]+'" height="'+d[1]+'" alt="">'
-      + (D[p.s].length > 1 ? '<img class="alt" loading="lazy" src="img/'+p.s+'-1-s.webp"'
-          + ' srcset="img/'+p.s+'-1-s.webp 720w, img/'+p.s+'-1.webp 1440w"'
+      + (D[p.s].length > 1 ? '<img class="alt" loading="lazy" src="img/'+p.s+'-'+a+'-s.webp"'
+          + ' srcset="img/'+p.s+'-'+a+'-s.webp 720w, img/'+p.s+'-'+a+'.webp 1440w"'
           + ' sizes="(max-width:860px) 100vw, 46vw" alt=""></span>' : '</span>')
       + '<span class="meta"><span><span class="n num">'+('0'+(i+1)).slice(-2)+'</span>'
       + '<span class="t" data-lt="'+p.lt+'" data-en="'+p.en+'">'+p.lt+'</span></span>'
@@ -794,7 +759,6 @@ var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySele
     b += '<button type="button" class="num" data-c="'+i+'" aria-pressed="'+(i===0?'true':'false')+'">'+('0'+(i+1)).slice(-2)+'</button>';
   }
   fig.innerHTML = h; sw.innerHTML = b;
-  fig.firstElementChild.classList.add('is-base');
   cap.textContent = COL[0].lt;
   sw.addEventListener('click', function(e){
     var btn = e.target.closest('button[data-c]'); if(!btn) return;
@@ -802,120 +766,38 @@ var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySele
   });
 })();
 
-/* ---------------- viewer — one frame at a time, wiped ---------------- */
+/* ---------------- viewer ---------------- */
 (function(){
-  var v = $('#viewer'), frame = $('#vFrame'), stage = $('#vStage'), rail = $('#vRail'),
-      t = $('#vTitle'), sub = $('#vSub'), cap = $('#vCap'),
-      now = $('#vNow'), all = $('#vAll'),
-      proj = null, idx = 0, imgs = [], last = null;
-
-  function pad(n){ return ('0'+n).slice(-2) }
-
-  function build(pi){
-    proj = P[pi];
-    var dims = D[proj.s], h = '', r = '';
+  var v = $('#viewer'), stack = $('#vStack'), t = $('#vTitle'), s = $('#vSub'), last = null;
+  function open(i){
+    var p = P[i], dims = D[p.s], out = '';
+    t.textContent = lang==='en' ? p.en : p.lt;
+    s.textContent = (lang==='en' ? p.pen : p.plt) + ' · ' + p.y + (p.flt ? ' · ' + (lang==='en'?p.fen:p.flt) : '');
     for (var k=0;k<dims.length;k++){
-      h += '<img data-k="'+k+'" src="img/'+proj.s+'-'+k+'.webp"'
-        + ' width="'+dims[k][0]+'" height="'+dims[k][1]+'" alt="">';
-      r += '<button type="button" data-k="'+k+'" aria-current="false" aria-label="'+(k+1)+'">'
-        + '<img loading="lazy" src="img/'+proj.s+'-'+k+'-s.webp" alt=""></button>';
+      out += '<img '+(k>1?'loading="lazy" ':'')+'src="img/'+p.s+'-'+k+'.webp" width="'+dims[k][0]+'" height="'+dims[k][1]+'" alt="">';
     }
-    frame.innerHTML = h; rail.innerHTML = r;
-    imgs = $$('img', frame);
-    all.textContent = pad(dims.length);
-    t.textContent = lang==='en' ? proj.en : proj.lt;
-    sub.textContent = (lang==='en' ? proj.pen : proj.plt) + ' · ' + proj.y
-      + (proj.flt ? ' · ' + (lang==='en'?proj.fen:proj.flt) : '');
-    var c = lang==='en' ? proj.cen : proj.clt;
-    cap.textContent = c || '';
-    cap.parentNode.classList.toggle('no-cap', !c);
-    idx = -1;
-    go(0, 1);
-  }
-
-  function go(n, dir){
-    var total = imgs.length;
-    if (!total) return;
-    n = (n + total) % total;
-    if (n === idx) return;
-    frame.classList.toggle('rev', dir < 0);
-    imgs.forEach(function(im,k){
-      im.classList.toggle('is-out', k === idx);
-      im.classList.toggle('is-on', k === n);
-    });
-    idx = n;
-    now.textContent = pad(n+1);
-    $$('button', rail).forEach(function(b,k){
-      b.setAttribute('aria-current', k===n ? 'true' : 'false');
-      if (k===n) b.scrollIntoView({block:'nearest', inline:'nearest'});
-    });
-    /* keep the neighbours warm so the wipe never reveals a blank */
-    [n+1, n-1].forEach(function(m){
-      var im = imgs[(m+total)%total];
-      if (im) { var p = new Image(); p.src = im.src; }
-    });
-  }
-
-  function open(pi, from){
-    last = from;
-    build(pi);
+    var c = lang==='en' ? p.cen : p.clt;
+    out += '<div class="viewer-foot"><span>'+(c||'')+'</span><span>'+dims.length+' '+(lang==='en'?enFrames(dims.length):ltFrames(dims.length))+'</span></div>';
+    stack.innerHTML = out;
+    stack.scrollTop = 0; v.scrollTop = 0;
     v.classList.add('is-open');
     document.body.style.overflow = 'hidden';
-    $('#vNext').focus();
+    $('#vClose').focus();
   }
   function close(){
     v.classList.remove('is-open');
     document.body.style.overflow = '';
     if (last) last.focus();
-    setTimeout(function(){
-      if (!v.classList.contains('is-open')){ frame.innerHTML=''; rail.innerHTML=''; imgs=[]; }
-    }, 400);
+    setTimeout(function(){ if(!v.classList.contains('is-open')) stack.innerHTML=''; }, 400);
   }
-  function isOpen(){ return v.classList.contains('is-open') }
-
   document.addEventListener('click', function(e){
     var b = e.target.closest('.proj');
-    if (b){ open(+b.dataset.i, b); return; }
-    if (e.target.closest('#vClose')){ close(); return; }
-    if (e.target.closest('#vNext')){ go(idx+1, 1); return; }
-    if (e.target.closest('#vPrev')){ go(idx-1, -1); return; }
-    var th = e.target.closest('#vRail button');
-    if (th){ var k = +th.dataset.k; go(k, k > idx ? 1 : -1); return; }
-    if (e.target.closest('#vStage')){ go(idx+1, 1); }
+    if (b){ last = b; open(+b.dataset.i); return; }
+    if (e.target.closest('#vClose')) close();
   });
-
   document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape'){
-      if (isOpen()) close();
-      if ($('#sheet').classList.contains('is-open')) closeSheet();
-      return;
-    }
-    if (!isOpen()) return;
-    if (e.key === 'ArrowRight'){ e.preventDefault(); go(idx+1, 1) }
-    if (e.key === 'ArrowLeft'){ e.preventDefault(); go(idx-1, -1) }
+    if (e.key === 'Escape'){ if (v.classList.contains('is-open')) close(); if ($('#sheet').classList.contains('is-open')) closeSheet(); }
   });
-
-  /* swipe */
-  var sx = 0, sy = 0, tracking = false;
-  stage.addEventListener('touchstart', function(e){
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true;
-  }, {passive:true});
-  stage.addEventListener('touchend', function(e){
-    if (!tracking) return;
-    tracking = false;
-    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
-  }, {passive:true});
-
-  window.acViewerRelabel = function(){
-    if (!proj) return;
-    t.textContent = lang==='en' ? proj.en : proj.lt;
-    sub.textContent = (lang==='en' ? proj.pen : proj.plt) + ' · ' + proj.y
-      + (proj.flt ? ' · ' + (lang==='en'?proj.fen:proj.flt) : '');
-    var cc = (lang==='en' ? proj.cen : proj.clt) || '';
-    cap.textContent = cc;
-    cap.parentNode.classList.toggle('no-cap', !cc);
-  };
 })();
 
 /* ---------------- mobile sheet ---------------- */
@@ -952,7 +834,6 @@ $$('#sheet a').forEach(function(a){ a.addEventListener('click', closeSheet) });
       : 'AC Interior — erdvių dizaino studija | Klaipėda';
     var c = $('#colCap');
     if (c && window.__colIdx) c.textContent = COL[window.__colIdx()][l];
-    if (window.acViewerRelabel) window.acViewerRelabel();
     try { localStorage.setItem('ac-lang', l) } catch(e){}
   }
   $$('.lang button').forEach(function(b){ b.addEventListener('click', function(){ apply(b.dataset.lang) }) });
@@ -983,7 +864,7 @@ if (REDUCE) document.documentElement.classList.add('no-motion');
 
 /* reveal engine — fail-to-visible, never replays */
 (function(){
-  var els = $$('.rv, .clipfig, .mask, .yes, .foot, .proj, .curtain');
+  var els = $$('.rv, .clipfig, .mask, .yes, .foot, .proj');
   function showAll(){ els.forEach(function(e){ e.classList.add('is-in') }); document.documentElement.classList.add('hero-in'); }
   if (REDUCE || !('IntersectionObserver' in window)){ showAll(); return; }
   var io = new IntersectionObserver(function(ents){
@@ -1004,9 +885,26 @@ if (REDUCE) document.documentElement.classList.add('no-motion');
     if (hf) hf.classList.add('is-in');
     if (h1) h1.classList.add('is-in');
   })});
-  setTimeout(showAll, 2500);
-  window.addEventListener('load', function(){ setTimeout(showAll, 1200) });
-  document.addEventListener('visibilitychange', function(){ if (!document.hidden) setTimeout(showAll, 400) });
+
+  /* Safety net — reveals only what is ACTUALLY on screen. A blanket "show
+     everything" would fire the whole page while the visitor is still on the
+     hero, and every reveal below the fold would be spent before it is seen. */
+  function showVisible(){
+    var left = 0;
+    els.forEach(function(e){
+      if (e.classList.contains('is-in')) return;
+      var r = e.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0){ e.classList.add('is-in'); io.unobserve(e); }
+      else left++;
+    });
+    return left;
+  }
+  showVisible();
+  window.addEventListener('load', function(){ setTimeout(showVisible, 400) });
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) showVisible() });
+  /* backstop for environments that never dispatch IO callbacks (hidden panes,
+     headless capture); stops itself once nothing is left to reveal */
+  var beat = setInterval(function(){ if (!document.hidden && showVisible() === 0) clearInterval(beat) }, 400);
 })();
 
 /* single rAF loop: hero parallax + colour scrub + nav */
@@ -1022,16 +920,10 @@ if (REDUCE) document.documentElement.classList.add('no-motion');
   }
   cache();
 
-  var prevColIdx = 0;
-  var prevColIdx = 0;
   function setColour(i, fromScroll){
     if (i === colIdx) return;
     colIdx = i;
-    colImgs.forEach(function(im,k){
-      im.classList.toggle('is-base', k===prevColIdx);
-      im.classList.toggle('is-on', k===i);
-    });
-    prevColIdx = i;
+    colImgs.forEach(function(im,k){ im.classList.toggle('is-on', k===i) });
     colBtns.forEach(function(b,k){ b.setAttribute('aria-pressed', k===i ? 'true':'false') });
     if (colCap){
       colCap.style.opacity = '0';
